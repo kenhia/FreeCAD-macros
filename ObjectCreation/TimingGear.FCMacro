@@ -27,6 +27,9 @@
 #
 # Changelog
 # ---------
+# - v 1.6:
+#   - Fix Attachment support porting code for edwilliams16 version fix from:
+#     https://forum.freecad.org/viewtopic.php?p=812083#p812083
 # - v 1.5:
 #   - Fix position of base.
 # - v 1.4:
@@ -39,9 +42,9 @@
 
 __Name__ = 'GT2/GT3/GT5 Timing Gear Creator'
 __Comment__ = 'GT2/GT3/GT5 Gear Creator Macro (any gear size from 5 to 360 teeth)'
-__Author__ = 'eaguirre,galou'
-__Version__ = '1.5.0'
-__Date__ = '2019-12-29'
+__Author__ = 'eaguirre,galou,edwiliams16'
+__Version__ = '1.6.0'
+__Date__ = '2025-12-04'
 __License__ = 'LGPL-2.0-or-later'
 __Web__ = 'http://www.emilioaguirre.com'
 __Wiki__ = 'https://wiki.freecad.org/Macro_TimingGear'
@@ -462,7 +465,12 @@ class TimingGearWindow(object):
 
         sketch_gear = gear.newObject('Sketcher::SketchObject', 'SketchGear')
         sketch_gear.ViewObject.hide()
-        sketch_gear.Support = (gear.Origin.OriginFeatures[3], [''])  # The XY Plane.
+        if hasattr(sketch_gear, 'AttachmentSupport'):
+            sketch_gear.AttachmentSupport = (
+                gear.Origin.OriginFeatures[3], [''])  # The XY Plane.
+        else:
+            sketch_gear.Support = (
+                gear.Origin.OriginFeatures[3], [''])  # The XY Plane.
         sketch_gear.MapMode = 'FlatFace'
         sketch_gear.AttachmentOffset = app.Placement(
             app.Vector(0, 0, 0),
@@ -498,7 +506,12 @@ class TimingGearWindow(object):
         if self.with_base:
             sketch_base = gear.newObject('Sketcher::SketchObject', 'SketchBase')
             sketch_base.ViewObject.hide()
-            sketch_base.Support = (gear.Origin.OriginFeatures[3], [''])  # The XY Plane.
+            if hasattr(sketch_base, 'AttachmentSupport'):
+                sketch_base.AttachmentSupport = (
+                    gear.Origin.OriginFeatures[3], [''])  # The XY Plane.
+            else:
+                sketch_base.Support = (
+                    gear.Origin.OriginFeatures[3], [''])  # The XY Plane.
             sketch_base.MapMode = 'FlatFace'
             sketch_base.AttachmentOffset = app.Placement(
                 app.Vector(0, 0, -self.base_height),
@@ -534,7 +547,12 @@ class TimingGearWindow(object):
         # Add Top to the Gear
         if self.with_top:
             sketch_top = gear.newObject('Sketcher::SketchObject', 'SketchTop')
-            sketch_top.Support = (gear.Origin.OriginFeatures[3], [''])  # The XY Plane.
+            if hasattr(sketch_top, 'AttachmentSupport'):
+                sketch_top.AttachmentSupport = (
+                    gear.Origin.OriginFeatures[3], [''])  # The XY Plane.
+            else:
+                sketch_top.Support = (
+                    gear.Origin.OriginFeatures[3], [''])  # The XY Plane.
             sketch_top.MapMode = 'FlatFace'
             sketch_top.AttachmentOffset = app.Placement(
                 app.Vector(0, 0, self.gear_height),
